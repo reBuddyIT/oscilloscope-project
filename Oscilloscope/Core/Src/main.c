@@ -35,7 +35,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
-// Определ�?ем размер буфера дл�? хранени�? данных �?ЦП
+// Размер буфера АЦП
 #define ADC_BUFFER_SIZE 1024
 
 /* USER CODE END PD */
@@ -53,7 +53,7 @@ UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 
-// Буфер дл�? хранени�? данных �?ЦП
+// Буфер для хранения данных АЦП
 uint16_t adc_buffer[ADC_BUFFER_SIZE];
 
 // Указатель на текущую позицию в буфере
@@ -69,7 +69,7 @@ static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
-// Функци�? дл�? передачи данных через UART
+// Функция для передачи данных через UART
 void send_data_via_uart(uint16_t *data, uint16_t size);
 
 void transmitDataOverUART();
