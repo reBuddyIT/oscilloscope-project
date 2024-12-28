@@ -1,19 +1,16 @@
-const int outputPin = 9;      // ШИМ-выход
-const int sampleRate = 21000; // Частота дискретизации (Гц)
-const float frequency = 100;  // Частота синусоиды (Гц)
+// Установите значение ШИМ (от 0 до 255)
+int pwmValue = 255;
 
 void setup()
 {
-  pinMode(outputPin, OUTPUT);
+  // Установите вывод 9 как выход
+  pinMode(9, OUTPUT);
+
+  // Установите значение ШИМ на выводе 9
+  analogWrite(9, pwmValue);
 }
 
 void loop()
 {
-  for (int i = 0; i < 256; i++)
-  { // 256 шагов для аппроксимации синусоиды
-    float angle = (float)i * 2.0 * PI / 256.0;  // Расчет угла
-    int pwmValue = 127 + (127 * sin(angle));
-    analogWrite(outputPin, pwmValue);
-    delayMicroseconds(1000000 / sampleRate);    // Задержка для установки частоты
-  }
+
 }
