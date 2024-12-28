@@ -22,9 +22,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include <stdio.h>
-#include <string.h>
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -70,9 +67,7 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 // Функция для передачи данных через UART
-void send_data_via_uart(uint16_t *data, uint16_t size);
-
-void transmitDataOverUART();
+void Send_Data(uint16_t *data, uint16_t size);
 
 /* USER CODE END PFP */
 
@@ -119,79 +114,29 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  //uint8_t uart_data;
-  uint32_t adc_value = 0;
-  char uart_buffer[1024];
-
   while (1)
   {
-      /*HAL_ADC_Start(&hadc1);
-      if (HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY) == HAL_OK)
-      {
-          adc_value = HAL_ADC_GetValue(&hadc1);
-          sprintf(uart_buffer, "ADC Value: %lu\r\n", adc_value);
-          HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), HAL_MAX_DELAY);
-      }
-      HAL_ADC_Stop(&hadc1);
-      HAL_Delay(100); // Задержка для уменьшения частоты опроса*/
-
-
+	  //Запуск преобразования АЦП
 	  HAL_ADC_Start(&hadc1);
-	  if (HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY) == HAL_OK)
-	  {
-	      adc_value = HAL_ADC_GetValue(&hadc1);
-	      float voltage = (adc_value * 3.3) / 4095;
-	      sprintf(uart_buffer, "Voltage: %.4f V\r\n", voltage);
-	      HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), HAL_MAX_DELAY);
-	  }
-	  HAL_ADC_Stop(&hadc1);
-	  HAL_Delay(1000); // Задержка для уменьшения частоты опроса
-
-
-	  /*HAL_ADC_Start(&hadc1);
-	  HAL_ADC_PollForConversion(&hadc1, 1);
-	  uint16_t adcValue = HAL_ADC_GetValue(&hadc1);
-
-	  if (adc_buffer_index < ADC_BUFFER_SIZE)
-	  {
-	    adc_buffer[adc_buffer_index++] = adcValue;
-	  }
-	  else
-	  {
-	    // Буфер заполнен, передаем данные по UART
-	    transmitDataOverUART();
-	    adc_buffer_index = 0; // Сбрасываем индекс
-	  }
-
-	  HAL_ADC_Stop(&hadc1);
-	  HAL_Delay(10); // Задержка для уменьшения частоты опроса*/
-
-
-	  //Запу�?к преобразовани�? �?ЦП
-	  //HAL_ADC_Start(&hadc1);
-	  //HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+	  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
 
 	  // Считывание данных АЦП
-	  //uint16_t adc_value = HAL_ADC_GetValue(&hadc1);
+	  uint16_t adc_value = HAL_ADC_GetValue(&hadc1);
 
-	  // Конвертация в вольты
-	  //float adc_v_value = adc_value * 3.3 / 4095;
 	  // Сохранение данных в буфер
-	  //adc_buffer[adc_buffer_index++] = adc_v_value;
-	  //adc_buffer[adc_buffer_index++] = adc_value;
+	  adc_buffer[adc_buffer_index++] = adc_value;
 
 	  // Если буфер заполнен, передаем данные через UART
-	  //if (adc_buffer_index >= ADC_BUFFER_SIZE)
-	  //{
-		     //send_data_via_uart(adc_buffer, ADC_BUFFER_SIZE);
-		     //adc_buffer_index = 0; // Сброс указателя буфера
-      //}
+	  if (adc_buffer_index >= ADC_BUFFER_SIZE)
+	  {
+		     Send_Data(adc_buffer, ADC_BUFFER_SIZE);
+		     // Сброс указателя буфера
+		     adc_buffer_index = 0;
+      }
 
-	  // О�?тановка преобразовани�? �?ЦП
-      //HAL_ADC_Stop(&hadc1);
-
-	  // Пауза для следующего преобразования
-	  //HAL_Delay(1); // Уменьшите задержку для более высокой частоты считывания
+	  // Остановка преобразования АЦП
+      HAL_ADC_Stop(&hadc1);
+	  HAL_Delay(1);
 
     /* USER CODE END WHILE */
 
@@ -399,26 +344,13 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-// Функци�? дл�? передачи данных через UART
-void send_data_via_uart(uint16_t *data, uint16_t size)
+// Функция для передачи данных через UART
+void Send_Data(uint16_t *data, uint16_t size)
 {
     for (uint16_t i = 0; i < size; i++)
     {
         HAL_UART_Transmit(&huart2, (uint8_t*)&data[i], sizeof(data[i]), HAL_MAX_DELAY);
     }
-}
-
-void transmitDataOverUART()
-{
-  // Преобразуем данные в байты для передачи по UART
-  uint8_t txBuffer[ADC_BUFFER_SIZE * 2]; // Каждый uint16_t занимает 2 байта
-  for (int i = 0; i < ADC_BUFFER_SIZE; i++)
-  {
-    txBuffer[i * 2] = adc_buffer[i] & 0xFF; // Младший байт
-    txBuffer[i * 2 + 1] = (adc_buffer[i] >> 8) & 0xFF; // Старший байт
-  }
-
-  HAL_UART_Transmit(&huart2, txBuffer, ADC_BUFFER_SIZE * 2, HAL_MAX_DELAY);
 }
 
 /* USER CODE END 4 */
