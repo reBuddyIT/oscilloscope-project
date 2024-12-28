@@ -15,17 +15,17 @@
 
 ### Arduino UNO:
 
-Загрузите код signal_generator.ino на Arduino UNO с помощью Arduino IDE.
+Загрузить код signal_generator.ino на Arduino UNO с помощью Arduino IDE.
 
 ### STM32:
 
-Загрузите код из директории Oscilloscope на микроконтроллер STM32 с помощью STM32CubeIDE.
+Загрузить код из директории Oscilloscope на микроконтроллер STM32 с помощью STM32CubeIDE.
 
 ### Python:
 
 Установить модули pyserial и matplotlib: pip install pyserial matplotlib
 
-Запустите скрипт main.py
+Запустить скрипт main.py
 
 ## Подключение
 
