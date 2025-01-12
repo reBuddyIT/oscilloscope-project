@@ -1,11 +1,13 @@
-void setup() {
+void setup()
+{
   // Инициализация последовательного порта
   Serial.begin(115200);
 }
 
-void loop() {
-  // Генерация переменного UART сигнала
-  for (int i = 0; i < 256; i++) {
+void loop()
+{
+  for (int i = 0; i < 256; i++)
+  {
     // Отправка данных через UART
     Serial.print(i);
 
