@@ -34,3 +34,6 @@
 
 1. Подключить выход Arduino TX к входу STM32 пин PA6.
 2. Подключить пин GND Arduino UNO и пин GND STM32.
+
+## Результат работы программы
+![alt text](oscilloscope_diagram.png)
