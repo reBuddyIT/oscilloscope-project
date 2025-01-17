@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -33,7 +33,7 @@
 /* USER CODE BEGIN PD */
 
 // Размер буфера АЦП
-#define ADC_BUFFER_SIZE 1024
+#define ADC_BUFFER_SIZE 64
 
 /* USER CODE END PD */
 
@@ -116,7 +116,7 @@ int main(void)
 
   while (1)
   {
-	  //Запуск преобразования АЦП
+	  // Запуск преобразования АЦП
 	  HAL_ADC_Start(&hadc1);
 	  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
 
@@ -124,7 +124,7 @@ int main(void)
 	  uint16_t adc_value = HAL_ADC_GetValue(&hadc1);
 
 	  // Сохранение данных в буфер
-	  adc_buffer[adc_buffer_index++] = adc_value;
+	  adc_buffer[adc_buffer_index++] = (adc_value * 3.9) / 4095;
 
 	  // Если буфер заполнен, передаем данные через UART
 	  if (adc_buffer_index >= ADC_BUFFER_SIZE)
@@ -136,7 +136,8 @@ int main(void)
 
 	  // Остановка преобразования АЦП
       HAL_ADC_Stop(&hadc1);
-	  HAL_Delay(1);
+      HAL_Delay(5);
+
 
     /* USER CODE END WHILE */
 
@@ -215,7 +216,7 @@ static void MX_ADC1_Init(void)
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = DISABLE;
-  hadc1.Init.ContinuousConvMode = ENABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
@@ -230,7 +231,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_6;
+  sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -344,7 +345,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-// Функция для передачи данных через UART
+// Функци�? дл�? передачи данных через UART
 void Send_Data(uint16_t *data, uint16_t size)
 {
     for (uint16_t i = 0; i < size; i++)
